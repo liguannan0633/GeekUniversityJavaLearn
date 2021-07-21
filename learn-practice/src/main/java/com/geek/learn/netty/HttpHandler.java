@@ -1,5 +1,6 @@
 package com.geek.learn.netty;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,7 +32,12 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
-        try {
+        ByteBuf byteBuf = (ByteBuf) msg;
+        byte[] content = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(content);
+        System.out.println(Thread.currentThread() + ": 最终打印: " + new String(content));
+        ((ByteBuf) msg).release();
+        /*try {
             FullHttpRequest fullHttpRequest = (FullHttpRequest) msg;
             String uri = fullHttpRequest.uri();
             if(uri.contains("test")){
@@ -41,7 +47,13 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
             e.printStackTrace();
         }finally {
             ReferenceCountUtil.release(msg);
-        }
+        }*/
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
     }
 
     private void handlerTest(FullHttpRequest fullHttpRequest, ChannelHandlerContext ctx) {

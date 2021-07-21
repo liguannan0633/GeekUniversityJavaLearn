@@ -15,8 +15,10 @@ public class HttpInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
         //绑定Handler到Channel的ChannelPipeline
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(new HttpServerCodec());
-        pipeline.addLast(new HttpObjectAggregator(1024 * 1024));
+        //pipeline.addLast(new HttpServerCodec());
+        //pipeline.addLast(new HttpObjectAggregator(1024 * 1024));
+        //自定义解码器(测试粘包拆包)
+        pipeline.addLast(new HttpDecoder());
         pipeline.addLast(new HttpHandler());
     }
 }
