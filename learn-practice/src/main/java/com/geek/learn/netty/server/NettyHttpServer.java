@@ -21,7 +21,7 @@ public class NettyHttpServer {
         int port = 8808;
 
         //创建EventLoopGroup
-        EventLoopGroup bossGroup = new NioEventLoopGroup(2);
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup(16);
 
         try{

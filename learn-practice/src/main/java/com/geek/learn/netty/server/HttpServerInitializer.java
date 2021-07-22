@@ -5,6 +5,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpRequestEncoder;
+import io.netty.handler.codec.http.HttpResponseDecoder;
 import io.netty.handler.codec.http.HttpServerCodec;
 
 /**
@@ -18,7 +20,7 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast(new HttpServerCodec());
         //注意: 必须设置HttpObjectAggregator 不然handler接受到的请求msg不是FullHttpRequest类型(因为如果不设置,是分片接受请求信息的,设置了就忽略分片,一次获取全部)
-        pipeline.addLast(new HttpObjectAggregator(1024 * 1024));
+        pipeline.addLast(new HttpObjectAggregator(10240 * 1024));
         //自定义解码器(测试粘包拆包)
         //pipeline.addLast(new HttpDecoder());
         pipeline.addLast(new HttpServerHandler());
