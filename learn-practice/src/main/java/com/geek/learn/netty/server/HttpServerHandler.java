@@ -1,6 +1,8 @@
 package com.geek.learn.netty.server;
 
 import com.geek.learn.netty.HttpClientTest;
+import com.geek.learn.netty.filter.HeaderHttpRequestFilter;
+import com.geek.learn.netty.filter.HeaderHttpResponseFilter;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -45,20 +47,38 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 //        System.out.println(Thread.currentThread() + ": 最终打印: " + new String(content));
 //        ((ByteBuf) msg).release();
         try {
-            FullHttpRequest fullHttpRequest = (FullHttpRequest) msg;
-            System.out.println();
-            String uri = fullHttpRequest.uri();
-            System.out.println("uri : " + uri);
+            System.out.println("msg: " + msg);
+            if(msg instanceof FullHttpRequest){
+                FullHttpRequest fullHttpRequest = (FullHttpRequest) msg;
+                System.out.println();
+                String uri = fullHttpRequest.uri();
+                System.out.println("uri : " + uri);
 
-            ByteBuf byteBuf = fullHttpRequest.content();
-            byte[] content = new byte[byteBuf.readableBytes()];
-            byteBuf.readBytes(content);
-            System.out.println(Thread.currentThread() + ": content: " + new String(content));
+                ByteBuf byteBuf = fullHttpRequest.content();
+                byte[] content = new byte[byteBuf.readableBytes()];
+                byteBuf.readBytes(content);
+                System.out.println(Thread.currentThread() + ": content: " + new String(content));
 
-            if(uri.contains("test")){
-                handlerTest(fullHttpRequest,ctx);
+                //添加filter
+                HeaderHttpRequestFilter filter = new HeaderHttpRequestFilter();
+                Integer uid = filter.filter(fullHttpRequest, ctx);
+
+                //认证通过 才能继续业务处理
+                if(uid != null){
+                    System.out.println("用户唯一标识: " + fullHttpRequest.headers().get("uid"));
+
+                    if(uri.contains("test")){
+                        //httpclient发送请求,执行业务逻辑
+                        String result = HttpClientTest.doGetTestOne("https://room.neibu.koolearn.com/api/room/live-notice?roomId=1");
+                        handlerTest(fullHttpRequest,ctx,result);
+                    }else {
+                        handlerTest(fullHttpRequest,ctx,"hello,其他");
+                    }
+                }else {
+                    handlerTest(fullHttpRequest,ctx,"非法用户");
+                }
             }else {
-                handlerTest(fullHttpRequest,ctx);
+                System.out.println("msg 类型不匹配哦");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -73,17 +93,22 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 
-    private void handlerTest(FullHttpRequest fullHttpRequest, ChannelHandlerContext ctx) {
+    private void handlerTest(FullHttpRequest fullHttpRequest, ChannelHandlerContext ctx, String str) {
         FullHttpResponse response = null;
         try {
-            String result = "hello 你好";
-            //httpclient发送请求,执行业务逻辑
-            result = HttpClientTest.doGetTestOne("https://room.neibu.koolearn.com/api/room/live-notice?roomId=1");
+            String result = str;
             if(StringUtils.hasText(result)){
                 response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(result.getBytes()));
                 response.headers().set("Content-Type","application/json");
                 response.headers().setInt("Content-Length",response.content().readableBytes());
             }
+
+            //响应过滤器
+            if(response != null){
+                HeaderHttpResponseFilter responseFilter = new HeaderHttpResponseFilter();
+                responseFilter.filter(response);
+            }
+
         }catch (Exception e){
             log.error("处理出错:");
             e.printStackTrace();
