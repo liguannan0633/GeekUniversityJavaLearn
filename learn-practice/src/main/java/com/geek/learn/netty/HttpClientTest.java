@@ -18,14 +18,14 @@ import java.io.IOException;
 public class HttpClientTest {
 
     public static void main(String[] args) {
-        doGetTestOne("http://localhost:8808/test");
+        doGetTestOne("https://room.neibu.koolearn.com/api/room/live-notice?roomId=1");
     }
 
     /**
      * GET---无参测试
      *
      */
-    public static void doGetTestOne(String url) {
+    public static String doGetTestOne(String url) {
         // 获得Http客户端(可以理解为:你得先有一个浏览器;注意:实际上HttpClient与浏览器是不一样的)
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // 创建Get请求
@@ -41,7 +41,9 @@ public class HttpClientTest {
             System.out.println("响应状态为:" + response.getStatusLine());
             if (responseEntity != null) {
                 System.out.println("响应内容长度为:" + responseEntity.getContentLength());
-                System.out.println("响应内容为:" + EntityUtils.toString(responseEntity));
+                String resutlt = EntityUtils.toString(responseEntity);
+                System.out.println("响应内容为:" + resutlt);
+                return resutlt;
             }
         } catch (ClientProtocolException e) {
             e.printStackTrace();
@@ -62,5 +64,6 @@ public class HttpClientTest {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 }

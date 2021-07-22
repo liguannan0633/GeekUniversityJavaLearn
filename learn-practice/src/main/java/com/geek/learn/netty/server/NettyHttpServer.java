@@ -1,5 +1,6 @@
-package com.geek.learn.netty;
+package com.geek.learn.netty.server;
 
+import com.geek.learn.netty.server.HttpServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -41,7 +42,7 @@ public class NettyHttpServer {
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     //绑定Handler到Channel的ChannelPipeline
-                    .childHandler(new HttpInitializer());
+                    .childHandler(new HttpServerInitializer());
 
             //指定端口
             Channel ch = b.bind(port).sync().channel();
