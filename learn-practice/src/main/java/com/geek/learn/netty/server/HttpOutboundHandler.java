@@ -44,10 +44,10 @@ public class HttpOutboundHandler {
 
         int cores = Runtime.getRuntime().availableProcessors();
         long keepAliveTime = 1000;
-        int queueSize = 2048;
+        int queueSize = 500;
         RejectedExecutionHandler handler = new ThreadPoolExecutor.CallerRunsPolicy();
         proxyService = new ThreadPoolExecutor(cores * 2, cores * 4,
-                keepAliveTime, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(queueSize),
+                keepAliveTime, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(queueSize),
                 new NamedThreadFactory("proxyService"), handler);
         
         IOReactorConfig ioConfig = IOReactorConfig.custom()
@@ -76,8 +76,7 @@ public class HttpOutboundHandler {
         String backendUrl = router.route(this.backendUrls);
         final String url = backendUrl + fullRequest.uri();
         filter.filter(fullRequest, ctx);
-        //proxyService.submit(()->fetchGet(fullRequest, ctx, url));
-        fetchGet(fullRequest, ctx, url);
+        proxyService.submit(()->fetchGet(fullRequest, ctx, url));
     }
     
     private void fetchGet(final FullHttpRequest inbound, final ChannelHandlerContext ctx, final String url) {

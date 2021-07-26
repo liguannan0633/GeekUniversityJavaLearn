@@ -34,7 +34,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
     private HttpRequestFilter filter = new JWTFilter();
 
     public HttpServerHandler() {
-        this.handler = new HttpOutboundHandler(Arrays.asList("https://room.neibu.koolearn.com","http://127.0.0.1:10749"));
+        this.handler = new HttpOutboundHandler(Arrays.asList("https://room.neibu.koolearn.com"));
     }
 
     @Override

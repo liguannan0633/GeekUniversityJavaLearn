@@ -42,7 +42,7 @@ public class ThreadPoolConfig implements AsyncConfigurer {
         // 配置最大线程池数量
         taskExecutor.setMaxPoolSize(cpuNum * 4);
         /// 线程池所使用的缓冲队列
-        taskExecutor.setQueueCapacity(2);
+        taskExecutor.setQueueCapacity(500);
         // 等待时间 （默认为0，此时立即停止），并没等待xx秒后强制停止
         taskExecutor.setAwaitTerminationSeconds(60);
         // 空闲线程存活时间
