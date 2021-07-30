@@ -1,8 +1,7 @@
 package com.geek.learn.thread;
 
-import java.util.concurrent.CountDownLatch;
-
 /**
+ * 线程一二三交替执行
  * @author LiGuanNan
  * @date 2021/7/24 8:43 下午
  */

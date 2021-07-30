@@ -1,4 +1,4 @@
-package com.geek.learn.thread;
+package com.geek.learn.thread.sychronized;
 
 /**
  * 展示多线程并发时,数据出现不安全现象

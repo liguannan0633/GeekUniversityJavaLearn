@@ -1,5 +1,5 @@
 
-package com.geek.learn.thread;
+package com.geek.learn.thread.sychronized;
 
 public class Thread1 implements Runnable {
 

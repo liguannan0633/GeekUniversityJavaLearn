@@ -1,4 +1,4 @@
-package com.geek.learn.thread;
+package com.geek.learn.thread.sychronized;
 
 import java.util.concurrent.Callable;
 

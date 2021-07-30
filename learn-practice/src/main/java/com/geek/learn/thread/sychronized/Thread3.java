@@ -1,5 +1,5 @@
 
-package com.geek.learn.thread;
+package com.geek.learn.thread.sychronized;
 
 /**
  * 测试synchronize锁其他对象

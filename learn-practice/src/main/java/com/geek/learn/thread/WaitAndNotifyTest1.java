@@ -1,6 +1,7 @@
 package com.geek.learn.thread;
 
 /**
+ * 线程一执行完毕之后线程二再执行
  * @author LiGuanNan
  * @date 2021/7/24 8:20 下午
  */

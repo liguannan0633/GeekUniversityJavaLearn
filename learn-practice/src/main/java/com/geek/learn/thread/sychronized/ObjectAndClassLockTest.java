@@ -1,4 +1,4 @@
-package com.geek.learn.thread;
+package com.geek.learn.thread.sychronized;
 
 /**
  * 类锁和对象锁测试
