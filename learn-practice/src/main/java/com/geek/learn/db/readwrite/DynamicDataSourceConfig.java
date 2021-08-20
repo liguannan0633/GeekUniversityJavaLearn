@@ -15,7 +15,7 @@ import java.util.Map;
  * @author xiaohe
  * @version V1.0.0
  */
-@Configuration
+//@Configuration
 public class DynamicDataSourceConfig {
 
     @Bean

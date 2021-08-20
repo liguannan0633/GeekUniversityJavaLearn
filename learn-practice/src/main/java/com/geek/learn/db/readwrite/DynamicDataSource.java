@@ -10,7 +10,7 @@ import java.util.Map;
  * 动态数据源
  * determineCurrentLookupKey() 方法决定使用哪个数据源
  *
- * @author xiaohe
+ * @author liguannan
  * @version V1.0.0
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
@@ -23,6 +23,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 
     /**
      * 决定使用哪个数据源之前需要把多个数据源的信息以及默认数据源信息配置好
+     * 每次执行sql之前，会从ThreadLocal当前线程中获取key，然后得到使用那个库的DataSource
      *
      * @param defaultTargetDataSource 默认数据源
      * @param targetDataSources       目标数据源

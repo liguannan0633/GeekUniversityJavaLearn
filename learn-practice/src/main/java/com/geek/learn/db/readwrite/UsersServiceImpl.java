@@ -38,10 +38,10 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     public Users findById(Integer id) {
         Users users = null;
         try {
-            loadBalancing();
+            //loadBalancing();
             users = this.baseMapper.selectById(id);
         }finally {
-            DynamicDataSource.clearDataSource();
+            //DynamicDataSource.clearDataSource();
         }
         return users;
     }

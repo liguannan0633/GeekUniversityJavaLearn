@@ -36,8 +36,9 @@ public class SpringBootDynamicCurDataSourceApplicationTests {
     @Test
     public void test2() throws Exception{
         Users users = new Users();
-        users.setName("ddd");
-        users.setComment("xxx");
+        users.setId(6L);
+        users.setName("ss");
+        users.setComment("dd");
         userService.insert(users);
     }
 
@@ -45,5 +46,9 @@ public class SpringBootDynamicCurDataSourceApplicationTests {
     public void test3() throws Exception{
         Users byId = userService.findById(1);
         System.out.println(byId.toString());
+        Users byId2 = userService.findById(1);
+        System.out.println(byId2.toString());
+        Users byId1 = userService.findById(1);
+        System.out.println(byId1.toString());
     }
 }
