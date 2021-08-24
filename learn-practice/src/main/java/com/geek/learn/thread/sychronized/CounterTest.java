@@ -1,15 +1,17 @@
 package com.geek.learn.thread.sychronized;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 
 public class CounterTest {
     
-    private AtomicInteger sum = new AtomicInteger();
+    private LongAdder sum = new LongAdder();
+    //private AtomicInteger sum = new AtomicInteger();
     private Object lock = new Object();
 
     public void incr() {
         //synchronized(lock) {
-            sum.incrementAndGet();
+            sum.increment();
         //}
     }
     public int getSum() {
