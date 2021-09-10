@@ -11,6 +11,7 @@
     <modules>
         <module>learn-practice</module>
         <module>rpcfx</module>
+        <module>dubbo-demo</module>
     </modules>
 
     <properties>
