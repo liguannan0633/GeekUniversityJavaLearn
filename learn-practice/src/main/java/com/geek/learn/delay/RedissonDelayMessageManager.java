@@ -1,7 +1,6 @@
 package com.geek.learn.delay;
 
 
-import cn.hutool.core.thread.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RDelayedQueue;
@@ -15,6 +14,7 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -67,21 +67,47 @@ public class RedissonDelayMessageManager implements DelayMessageManager {
     @Override
     public void afterPropertiesSet() {
         Arrays.stream(DelayMessageType.values()).forEach(delayMessageType -> handlerMap.put(delayMessageType, MySpringContextUtil.getBean(delayMessageType.getHandler())));
+        //设置两个接受任务的线程,当任务到达时只会被其中一个线程处理到
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
                     DelayMessage delayMessage = rBlockingQueue.take();
-                    log.info("redisson-delay-message-queue,consume message = {}", delayMessage);
+                    log.info("redisson-delay-message-queue,consume message1 = {}", delayMessage);
+                    //任务处理线程池
                     taskExecutor.execute(()-> handlerMap.get(delayMessage.getType()).handle(delayMessage));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    ThreadUtil.safeSleep(1000);
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
                     afterPropertiesSet();
                 }
             }
         });
         thread.setDaemon(true);
         thread.start();
+
+        Thread thread1 = new Thread(() -> {
+            while (true) {
+                try {
+                    DelayMessage delayMessage = rBlockingQueue.take();
+                    log.info("redisson-delay-message-queue,consume message2 = {}", delayMessage);
+                    taskExecutor.execute(()-> handlerMap.get(delayMessage.getType()).handle(delayMessage));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                    afterPropertiesSet();
+                }
+            }
+        });
+        thread1.setDaemon(true);
+        thread1.start();
     }
 
 }
