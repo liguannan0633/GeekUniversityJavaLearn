@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.support.composite.CompositeRule;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * @Author: Mr.xiu
@@ -22,10 +25,13 @@ public class BizRulesConfig {
    * 构建rules配置
    */
   public Rules fetchConfigRules(String ruleName) {
+    List<CompositeRule> compositeRules = bizRuleService.ruleDefinitions(ruleName);
+    if(CollectionUtils.isEmpty(compositeRules)){
+      return null;
+    }
 
-    CompositeRule compositeRule = bizRuleService.ruleDefinitions(ruleName);
     Rules rules = new Rules();
-    rules.register(compositeRule);
+    compositeRules.forEach(rules::register);
     return rules;
   }
 }

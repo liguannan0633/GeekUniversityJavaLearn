@@ -21,6 +21,8 @@ import org.jeasy.rules.core.DefaultRulesEngine;
 import org.jeasy.rules.core.RuleBuilder;
 import org.jeasy.rules.mvel.MVELRuleFactory;
 import org.jeasy.rules.support.composite.ActivationRuleGroup;
+import org.jeasy.rules.support.composite.ConditionalRuleGroup;
+import org.jeasy.rules.support.composite.UnitRuleGroup;
 import org.jeasy.rules.support.reader.JsonRuleDefinitionReader;
 import org.jeasy.rules.support.reader.YamlRuleDefinitionReader;
 import org.junit.Test;
@@ -89,14 +91,15 @@ public class EasyRulesTest extends BaseTest {
     Facts facts = new Facts();
     facts.put("param", dto);
 
-    //组合规则 ActivationRuleGroup 逻辑异或 XOR
+    //组合规则 ActivationRuleGroup 只执行优先级最高的那个,如果满足就不在执行后面的了,如果不满足继续执行后面的,直到找到一个满足的规则就停止执行
+    //也就是说,只要找到一个符合的就执行找个规则的then,后面的就不看了
     ActivationRuleGroup ruleGroup = new ActivationRuleGroup("audit-rule", "审核规则");
 
-    //组合规则 ActivationRuleGroup 按权重，执行所有规则， ALL
-//    ConditionalRuleGroup ruleGroup = new ConditionalRuleGroup("audit-rule", "审核规则");
+    //找到优先级最高的，如果符合，然后找到其他的符合的rule并执行,如果不符合,直接结束,等所有条件都检查完毕之后再执行then操作
+    //ConditionalRuleGroup ruleGroup = new ConditionalRuleGroup("audit-rule", "审核规则");
 
-    //组合规则 ActivationRuleGroup 全部执行或者失败，AND
-//    UnitRuleGroup ruleGroup = new UnitRuleGroup("audit-rule", "审核规则");
+    //只要一个不符合，就都不执行了，就是要么都执行，要么都不执行
+    //UnitRuleGroup ruleGroup = new UnitRuleGroup("audit-rule", "审核规则");
 
     ruleGroup.addRule(new PreAuditRule());
     ruleGroup.addRule(new ReAuditRule());
@@ -197,11 +200,11 @@ public class EasyRulesTest extends BaseTest {
     //引擎
     RulesEngineParameters parameters = new RulesEngineParameters();
     //遇到成功规则，跳过后续规则
-    parameters.skipOnFirstAppliedRule(true);
+    //parameters.skipOnFirstAppliedRule(true);
     //遇到失败规则，继续后续规则
-//    parameters.skipOnFirstFailedRule(true);
+    //parameters.skipOnFirstFailedRule(true);
     //遇到失败规则，跳过后续规则
-//    parameters.skipOnFirstNonTriggeredRule(true);
+    parameters.skipOnFirstNonTriggeredRule(true);
     DefaultRulesEngine rulesEngine = new DefaultRulesEngine(parameters);
     rulesEngine.fire(yamlRules, facts);
   }

@@ -20,11 +20,13 @@ public class DefaultRulesListener implements RuleListener {
 
   @Override
   public boolean beforeEvaluate(Rule rule, Facts facts) {
+    System.out.println("哈哈哈哈哈 beforeEvaluate");
     return true;
   }
 
   @Override
   public void afterEvaluate(Rule rule, Facts facts, boolean b) {
+    System.out.println("哈哈哈哈哈 afterEvaluate");
     if (!b) {
       auditService.failDeal(rule,facts);
     }
@@ -32,16 +34,18 @@ public class DefaultRulesListener implements RuleListener {
 
   @Override
   public void beforeExecute(Rule rule, Facts facts) {
-
+    System.out.println("哈哈哈哈哈 beforeExecute");
   }
 
   @Override
   public void onSuccess(Rule rule, Facts facts) {
+    System.out.println("哈哈哈哈哈 onSuccess");
     log.info("rule execute success...ruleName:{}", rule.getName());
   }
 
   @Override
   public void onFailure(Rule rule, Facts facts, Exception e) {
+    System.out.println("哈哈哈哈哈 onFailure");
     log.info("rule execute fail...ruleName:{}", rule.getName());
   }
 }

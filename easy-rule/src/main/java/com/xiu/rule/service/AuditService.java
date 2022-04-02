@@ -16,6 +16,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AuditService {
 
+  public void test(){
+    System.out.println("====>执行微服务RPC接口调用");
+  }
+
   /**
    * 初审操作
    *

@@ -41,5 +41,6 @@
     <if test='name != null'>
       AND `name` = #{name}
     </if>
+    order by id asc
   </select>
 </mapper>

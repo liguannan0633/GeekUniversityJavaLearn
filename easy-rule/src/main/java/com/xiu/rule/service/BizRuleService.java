@@ -5,6 +5,8 @@ import com.xiu.rule.helper.BizRuleHelper;
 import com.xiu.rule.mapper.BizRuleMapper;
 import com.xiu.rule.pojo.domain.BizRuleComposePo;
 import com.xiu.rule.pojo.domain.BizRulePo;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -57,12 +59,12 @@ public class BizRuleService {
   }
 
   /**
-   * 找出该组所有的规则
+   * 找出该组单个的规则
    *
    * @param groupCode 规则组
    * @return 结果
    */
-  public CompositeRule ruleDefinitions(String groupCode) {
+  public CompositeRule ruleDefinition(String groupCode) {
     //规则
     List<BizRulePo> bizRuleList = this.selectByName(groupCode);
     if (CollectionUtils.isEmpty(bizRuleList)) {
@@ -100,5 +102,55 @@ public class BizRuleService {
       finalCompositeRule.addRule(rule);
     });
     return finalCompositeRule;
+  }
+
+  /**
+   * 找出该组所有的规则
+   *
+   * @param groupCode 规则组
+   * @return 结果
+   */
+  public List<CompositeRule> ruleDefinitions(String groupCode) {
+    //规则
+    List<BizRulePo> bizRuleList = this.selectByName(groupCode);
+    if (CollectionUtils.isEmpty(bizRuleList)) {
+      throw new RuntimeException("规则定义不存在");
+    }
+
+    List<CompositeRule> list = new ArrayList<>();
+    bizRuleList.forEach(bizRule -> {
+      CompositeRule compositeRule;
+      switch (CompositeRuleTypeEnum.of(bizRule.getCompositeType())) {
+        case AND:
+          compositeRule = new UnitRuleGroup(bizRule.getName());
+          break;
+        case ALL:
+          compositeRule = new ConditionalRuleGroup(bizRule.getName());
+          break;
+        default:
+          compositeRule = new ActivationRuleGroup(bizRule.getName());
+      }
+      compositeRule.setDescription(bizRule.getDescription());
+      compositeRule.setPriority(bizRule.getPriority());
+      //规则组合数据
+      List<BizRuleComposePo> bizRuleComposeList = composeService.selectByRule(bizRule.getId());
+      CompositeRule finalCompositeRule = compositeRule;
+      BizRuleHelper bizRuleHelper = new BizRuleHelper(new ParserContext());
+
+      //规则定义
+      bizRuleComposeList.forEach(bizRuleCompose -> {
+        RuleDefinition ruleComposeDefinition = new RuleDefinition();
+        ruleComposeDefinition.setName(bizRuleCompose.getName());
+        BeanUtils.copyProperties(bizRuleCompose, ruleComposeDefinition);
+        if (!StringUtils.isEmpty(bizRuleCompose.getActions())) {
+          List<String> actions = Arrays.asList(bizRuleCompose.getActions().split(";"));
+          ruleComposeDefinition.setActions(actions);
+        }
+        Rule rule = bizRuleHelper.createSimpleRule(ruleComposeDefinition);
+        finalCompositeRule.addRule(rule);
+      });
+      list.add(finalCompositeRule);
+    });
+    return list;
   }
 }

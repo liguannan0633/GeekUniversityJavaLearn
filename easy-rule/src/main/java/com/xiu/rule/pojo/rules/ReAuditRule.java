@@ -14,18 +14,20 @@ import org.jeasy.rules.annotation.Rule;
  * @Description: 复审规则
  * @Date: 2021/1/13 19:54
  */
-@Rule(name = "re-audit", description = "复审", priority = 2)
+@Rule(name = "re-audit", description = "复审", priority = 0)
 @Slf4j
 public class ReAuditRule {
 
   @Condition
   public boolean when(@Fact("param") RuleParam dto) {
-    return Objects.equals(dto.getBusinessCode(), "2");
+    boolean equals = Objects.equals(dto.getBusinessCode(), "2");
+    System.out.println("ReAuditRule.when(), 结果: " + equals);
+    return equals;
   }
 
   @Action(order = 1)
   public void action(@Fact("param") RuleParam dto) {
-    log.info("这是复审单");
+    log.info("==========>这是复审单");
   }
   @Action(order = 2)
   public void action2(@Fact("param") RuleParam dto) {
