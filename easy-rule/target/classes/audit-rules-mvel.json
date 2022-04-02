@@ -1,0 +1,19 @@
+[
+  {
+    "name": "audit-rules",
+    "description": "审核规则",
+    "priority": 1,
+    "compositeRuleType": "ConditionalRuleGroup",
+    "composingRules": [
+      {
+        "name": "pre-audit",
+        "description": "初审",
+        "condition": "('1').equals(param.businessCode)",
+        "priority": 1,
+        "actions": [
+          "auditService.preAudit(param)"
+        ]
+      }
+    ]
+  }
+]
