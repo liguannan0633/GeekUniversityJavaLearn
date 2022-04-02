@@ -5,13 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.geek</groupId>
-    <artifactId>java-university</artifactId>
+    <artifactId>geek-university-java-learn</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>learn-practice</module>
         <module>rpcfx</module>
         <module>dubbo-demo</module>
+        <module>easy-rule</module>
     </modules>
 
     <properties>
