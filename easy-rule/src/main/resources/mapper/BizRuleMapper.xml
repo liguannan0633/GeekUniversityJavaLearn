@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiu.rule.mapper.BizRuleMapper">
+  <insert id="insert" parameterType="com.xiu.rule.pojo.domain.BizRulePo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into t_r_biz_rule
+    (
+        `name`,
+        description,
+        priority,
+        composite_type,
+        state,
+        create_time
+    )
+    values
+    (
+        #{name},
+        #{description},
+        #{priority},
+        #{compositeType},
+        0,
+        now()
+    )
+  </insert>
+
+  <!--条件查询-->
+  <select id="selectById" resultType="com.xiu.rule.pojo.domain.BizRulePo">
+    select
+    *
+    from t_r_biz_rule
+    where
+    id = #{id}
+  </select>
+
+  <!--条件查询-->
+  <select id="selectByName" resultType="com.xiu.rule.pojo.domain.BizRulePo">
+    select
+    *
+    from t_r_biz_rule
+    where
+    state =0
+    <if test='name != null'>
+      AND `name` = #{name}
+    </if>
+  </select>
+</mapper>

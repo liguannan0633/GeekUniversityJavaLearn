@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiu.rule.mapper.BizRuleComposeMapper">
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into t_r_biz_rule_compose
+    (
+    `rule_id`,
+    `condition`,
+    `name`,
+    `description`,
+    `priority`,
+    `actions`,
+    `state`,
+    `create_time`
+    )
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (
+      #{item.ruleId},
+      #{item.condition},
+      #{item.name},
+      #{item.description},
+      #{item.priority},
+      #{item.actions},
+      0,
+      now()
+      )
+    </foreach>
+  </insert>
+
+  <!--更新-->
+  <update id="update" parameterType="com.xiu.rule.pojo.domain.BizRuleComposePo">
+    update  t_r_biz_rule_compose
+    set `condition` = #{condition},
+    update_time = now()
+    where id = #{id}
+  </update>
+
+  <!--条件查询-->
+  <select id="selectById" resultType="com.xiu.rule.pojo.domain.BizRuleComposePo">
+    select
+    id,rule_id,`condition`,`name`,priority,actions
+    from t_r_biz_rule_compose
+    where
+    id = #{id}
+  </select>
+
+  <!--条件查询-->
+  <select id="selectByRule" resultType="com.xiu.rule.pojo.domain.BizRuleComposePo">
+    select
+    id,rule_id,`condition`,`name`,priority,actions
+    from t_r_biz_rule_compose
+    where
+    state =0
+    AND `rule_id` = #{ruleId}
+  </select>
+</mapper>
