@@ -25,6 +25,7 @@ public class WaitAndNotifyTest1 {
                 if(productCount >= MAX_COUNT){
                     System.out.println(Thread.currentThread().getName() + ":库存已满，不用生产了");
                     try {
+                        notifyAll();
                         this.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -35,7 +36,7 @@ public class WaitAndNotifyTest1 {
                 }
 
                 //虽然每次+1都唤醒其他线程，但是因为该方法是synchronized修饰的，只有当前线程释放锁了别的线程才有机会执行
-                notifyAll();
+                //notifyAll();
             }
         }
 
@@ -53,6 +54,7 @@ public class WaitAndNotifyTest1 {
                 if(productCount <= 0){
                     System.out.println(Thread.currentThread().getName() + ":库存已空，无法消费");
                     try {
+                        notifyAll();
                         this.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -63,7 +65,7 @@ public class WaitAndNotifyTest1 {
                 }
 
                 //虽然每次+1都唤醒其他线程，但是因为该方法是synchronized修饰的，只有当前线程释放锁了别的线程才有机会执行
-                notifyAll();
+                //notifyAll();
             }
         }
     }

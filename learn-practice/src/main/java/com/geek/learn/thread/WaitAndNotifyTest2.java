@@ -1,5 +1,9 @@
 package com.geek.learn.thread;
 
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * 线程一二三交替执行
  * @author LiGuanNan
@@ -8,14 +12,15 @@ package com.geek.learn.thread;
 public class WaitAndNotifyTest2 {
    static class B{
        public volatile int count = 0;
+       private List<Object> list = new CopyOnWriteArrayList<>();
 
        public synchronized void consume(int mo){
            while (true){
-               try {
+               /*try {
                    Thread.sleep(10);
                } catch (InterruptedException e) {
                    e.printStackTrace();
-               }
+               }*/
 
                if (count % 3 == mo) {
                    switch (mo){
@@ -33,6 +38,7 @@ public class WaitAndNotifyTest2 {
                            break;
                    }
                    count ++;
+                   list.add(new Object());
                }else {
                    try {
                        this.wait();
